@@ -5,17 +5,10 @@ Abstract:
 A structure containing all entities attached to hand-tracking anchors.
 */
 
-import RealityKit
-import ARKit
+import ARKit.hand_skeleton
 
-/// A structure that contains white spheres on each joint of a hand.
+/// A structure that contains data for finger joints.
 struct Hand {
-    /// The hand root to contain all hand-tracking anchor entities.
-    var handRoot = Entity()
-
-    /// The entity that associates with the joint name.
-    var fingers: [HandSkeleton.JointName: Entity] = [:]
-
     /// The collection of joints in a hand.
     static let joints: [(HandSkeleton.JointName, Finger, Bone)] = [
         // Define the thumb bones.
@@ -56,27 +49,4 @@ struct Hand {
         (.forearmWrist, .forearm, .wrist),
         (.forearmArm, .forearm, .arm)
     ]
-
-    init() {
-        /// The size of the sphere mesh.
-        let radius: Float = 0.01
-
-        /// The material to apply to the sphere entity.
-        let material = SimpleMaterial(color: .white, isMetallic: false)
-
-        // For each joint, create a sphere and attach it to the finger.
-        for bone in Self.joints {
-            /// The model entity representation of a hand anchor.
-            let sphere = ModelEntity(
-                mesh: .generateSphere(radius: radius),
-                materials: [material]
-            )
-
-            // Add the sphere to the `handRoot` entity.
-            handRoot.addChild(sphere)
-
-            // Attach the sphere to the finger.
-            fingers[bone.0] = sphere
-        }
-    }
 }

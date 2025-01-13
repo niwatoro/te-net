@@ -10,9 +10,10 @@
 		B5D85E4C2BFEAC450086AA66 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5D85E4B2BFEAC450086AA66 /* Assets.xcassets */; };
 		B5D85E4F2BFEAC450086AA66 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5D85E4E2BFEAC450086AA66 /* Preview Assets.xcassets */; };
 		B5D85E572BFEAC5D0086AA66 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D85E562BFEAC5D0086AA66 /* MainView.swift */; };
-		B5D85E592BFEAC850086AA66 /* ClosureComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D85E582BFEAC850086AA66 /* ClosureComponent.swift */; };
 		B5D85E5D2BFEACCA0086AA66 /* HandTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D85E5C2BFEACCA0086AA66 /* HandTracking.swift */; };
 		B5D85E5F2BFEACE50086AA66 /* HandTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D85E5E2BFEACE50086AA66 /* HandTrackingView.swift */; };
+		F3C32CD62CC799BD00719014 /* HandTrackingComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C32CD52CC799BA00719014 /* HandTrackingComponent.swift */; };
+		F3C32CD82CC79A3C00719014 /* HandTrackingSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C32CD72CC79A3800719014 /* HandTrackingSystem.swift */; };
 		F5DE73772C35A68F006F83AA /* Finger.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DE73762C35A688006F83AA /* Finger.swift */; };
 		F5DE73792C35A719006F83AA /* Bone.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DE73782C35A716006F83AA /* Bone.swift */; };
 		F5DE737B2C35A872006F83AA /* Hand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DE737A2C35A871006F83AA /* Hand.swift */; };
@@ -26,10 +27,11 @@
 		B5D85E4E2BFEAC450086AA66 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B5D85E502BFEAC450086AA66 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B5D85E562BFEAC5D0086AA66 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
-		B5D85E582BFEAC850086AA66 /* ClosureComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureComponent.swift; sourceTree = "<group>"; };
 		B5D85E5C2BFEACCA0086AA66 /* HandTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandTracking.swift; sourceTree = "<group>"; };
 		B5D85E5E2BFEACE50086AA66 /* HandTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandTrackingView.swift; sourceTree = "<group>"; };
 		E0952AAD4306467EF330B9AB /* SampleCode.xcconfig */ = {isa = PBXFileReference; name = SampleCode.xcconfig; path = Configuration/SampleCode.xcconfig; sourceTree = "<group>"; };
+		F3C32CD52CC799BA00719014 /* HandTrackingComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandTrackingComponent.swift; sourceTree = "<group>"; };
+		F3C32CD72CC79A3800719014 /* HandTrackingSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandTrackingSystem.swift; sourceTree = "<group>"; };
 		F5DE73762C35A688006F83AA /* Finger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Finger.swift; sourceTree = "<group>"; };
 		F5DE73782C35A716006F83AA /* Bone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bone.swift; sourceTree = "<group>"; };
 		F5DE737A2C35A871006F83AA /* Hand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hand.swift; sourceTree = "<group>"; };
@@ -87,16 +89,25 @@
 			children = (
 				F51726472C2E1CBF00A23901 /* Views */,
 				F51726482C2E1CD100A23901 /* Entities */,
+				F3C32CD42CC799AF00719014 /* Components */,
 				F51726462C2E1C6F00A23901 /* Systems */,
 				F587560F2C2DCE9F00D6E665 /* App */,
 			);
 			path = "RealityKit-HandTracking";
 			sourceTree = "<group>";
 		};
+		F3C32CD42CC799AF00719014 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F3C32CD52CC799BA00719014 /* HandTrackingComponent.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		F51726462C2E1C6F00A23901 /* Systems */ = {
 			isa = PBXGroup;
 			children = (
-				B5D85E582BFEAC850086AA66 /* ClosureComponent.swift */,
+				F3C32CD72CC79A3800719014 /* HandTrackingSystem.swift */,
 			);
 			path = Systems;
 			sourceTree = "<group>";
@@ -207,9 +218,10 @@
 				F5DE73792C35A719006F83AA /* Bone.swift in Sources */,
 				B5D85E572BFEAC5D0086AA66 /* MainView.swift in Sources */,
 				B5D85E5F2BFEACE50086AA66 /* HandTrackingView.swift in Sources */,
-				B5D85E592BFEAC850086AA66 /* ClosureComponent.swift in Sources */,
 				F5DE73772C35A68F006F83AA /* Finger.swift in Sources */,
+				F3C32CD82CC79A3C00719014 /* HandTrackingSystem.swift in Sources */,
 				B5D85E5D2BFEACCA0086AA66 /* HandTracking.swift in Sources */,
+				F3C32CD62CC799BD00719014 /* HandTrackingComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
