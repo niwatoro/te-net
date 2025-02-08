@@ -29,20 +29,18 @@ struct MainView: View {
             case .idle:
                 Button(action: startRecording) {
                     Text("Start Recording")
-                        .font(.headline)
-                        .padding()
-                        .background(.blue)
-                        .foregroundColor(.white)
                 }
+                .background(
+                    .blue,
+                    in: Capsule()
+                )
             case .recording:
                 Text(
                     "Recording... \(10 - Int(CACurrentMediaTime() - (rightHandEntity?.components[HandTrackingComponent.self]?.recordingStartTime ?? 0)))s"
                 )
-                .font(.headline)
                 .foregroundColor(.red)
             case .playing:
                 Text("Playing...")
-                    .font(.headline)
                     .foregroundColor(.green)
             }
 
@@ -52,11 +50,11 @@ struct MainView: View {
             {
                 Button(action: startPlayback) {
                     Text("Play Recording")
-                        .font(.headline)
-                        .padding()
-                        .background(.green)
-                        .foregroundColor(.white)
                 }
+                .background(
+                    .green,
+                    in: Capsule()
+                )
             }
         }
         .onAppear {
