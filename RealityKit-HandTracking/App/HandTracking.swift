@@ -1,22 +1,25 @@
 /*
-See the LICENSE.txt file for this sample’s licensing information.
+See the LICENSE.txt file for this sample's licensing information.
 
 Abstract:
 The app's main entry point.
 */
 
+import ARKit
+import RealityKit
 import SwiftUI
 
 @main
 struct HandTracking: App {
-    var body: some Scene {
+    @State private var rightHandEntity: Entity?
+
+    var body: some SwiftUI.Scene {
         WindowGroup {
-            MainView()
+            MainView(rightHandEntity: $rightHandEntity)
         }
 
-        // The immersive space that defines `HeadPositionView`.
         ImmersiveSpace(id: "HandTrackingScene") {
-            HandTrackingView()
+            HandTrackingView(rightHandEntity: $rightHandEntity)
         }
     }
 }
