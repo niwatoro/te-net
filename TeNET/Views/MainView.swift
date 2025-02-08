@@ -16,8 +16,9 @@ struct MainView: View {
     /// The current tracking mode
     @State private var trackingMode: HandTrackingComponent.TrackingMode = .idle
 
-    /// Reference to hand tracking entities
+    /// References to hand tracking entities
     @Binding var rightHandEntity: Entity?
+    @Binding var leftHandEntity: Entity?
 
     /// The label showing the remaining time for recording or playback
     @State private var timerLabel: String = ""
@@ -48,8 +49,10 @@ struct MainView: View {
             }
 
             if trackingMode == .idle
-                && (rightHandEntity?.components[HandTrackingComponent.self]?.recordedFrames.isEmpty
-                    == false)
+                && ((rightHandEntity?.components[HandTrackingComponent.self]?.recordedFrames
+                    .isEmpty == false)
+                    || (leftHandEntity?.components[HandTrackingComponent.self]?
+                        .recordedFrames.isEmpty == false))
             {
                 Button(action: startPlayback) {
                     Text("Play Recording Backward")
@@ -68,30 +71,26 @@ struct MainView: View {
     }
 
     private func startRecording() {
-        guard let rightHand = rightHandEntity
-        else {
-            print("Failed to start recording: right hand entity not found")
-            return
+        // Start recording for all hands
+        updateHandComponents { component in
+            component.startRecording()
         }
 
-        var rightComponent =
-            rightHand.components[HandTrackingComponent.self]
-            ?? HandTrackingComponent(chirality: .right)
-
-        rightComponent.startRecording()
-        rightHand.components.set(rightComponent)
         trackingMode = .recording
         timerLabel = "10.00"
 
         Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
-            guard trackingMode == .recording else {
+            guard trackingMode == .recording,
+                let component = rightHandEntity?.components[HandTrackingComponent.self],
+                let startTime = component.recordingStartTime
+            else {
                 timer.invalidate()
                 return
             }
 
-            let elapsedTime = CACurrentMediaTime() - rightComponent.recordingStartTime!
-            var remainingTime = 10 - elapsedTime;
-            if (remainingTime < 0) {
+            let elapsedTime = CACurrentMediaTime() - startTime
+            var remainingTime = 10 - elapsedTime
+            if remainingTime < 0 {
                 remainingTime = 0
             }
             timerLabel = String(format: "%.2f", remainingTime)
@@ -134,18 +133,22 @@ struct MainView: View {
     }
 
     private func updateHandComponents(_ update: (inout HandTrackingComponent) -> Void) {
-        guard
-            let rightHand = rightHandEntity
-        else {
-            print("Failed to update hand components: right hand entity not found")
-            return
+        // Update right hand
+        if let rightHand = rightHandEntity {
+            var component =
+                rightHand.components[HandTrackingComponent.self]
+                ?? HandTrackingComponent(chirality: .right)
+            update(&component)
+            rightHand.components.set(component)
         }
 
-        var rightComponent =
-            rightHand.components[HandTrackingComponent.self]
-            ?? HandTrackingComponent(chirality: .right)
-
-        update(&rightComponent)
-        rightHand.components.set(rightComponent)
+        // Update left hand
+        if let lefthand = leftHandEntity {
+            var component =
+                lefthand.components[HandTrackingComponent.self]
+                ?? HandTrackingComponent(chirality: .left)
+            update(&component)
+            lefthand.components.set(component)
+        }
     }
 }

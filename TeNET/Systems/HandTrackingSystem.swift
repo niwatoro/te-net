@@ -19,6 +19,9 @@ struct HandTrackingSystem: System {
     /// The most recent anchor that the provider detects on the right hand.
     static var latestRightHand: HandAnchor?
 
+    /// The most recent anchor that the provider detects on the left hand.
+    static var latestLeftHand: HandAnchor?
+
     /// Recording duration in seconds
     static let recordingDuration: TimeInterval = 10.0
 
@@ -42,6 +45,8 @@ struct HandTrackingSystem: System {
             switch anchorUpdate.anchor.chirality {
             case .right:
                 self.latestRightHand = anchorUpdate.anchor
+            case .left:
+                self.latestLeftHand = anchorUpdate.anchor
             default:
                 break
             }
@@ -62,7 +67,7 @@ struct HandTrackingSystem: System {
                 continue
             }
 
-            if handComponent.fingers.isEmpty {
+            if handComponent.forwardFingers.isEmpty || handComponent.backwardFingers.isEmpty {
                 self.addJoints(to: entity, handComponent: &handComponent)
             }
 
@@ -70,6 +75,7 @@ struct HandTrackingSystem: System {
                 let handAnchor: HandAnchor =
                     switch handComponent.chirality {
                     case .right: Self.latestRightHand
+                    case .left: Self.latestLeftHand
                     default: nil
                     }
             else { continue }
@@ -79,23 +85,14 @@ struct HandTrackingSystem: System {
                 let handSkeleton = handAnchor.handSkeleton,
                 let startTime = handComponent.recordingStartTime
             {
-                for (jointName, jointEntity) in handComponent.fingers {
-                    let anchorFromJointTransform = handSkeleton.joint(jointName)
-                        .anchorFromJointTransform
-                    jointEntity.setTransformMatrix(
-                        handAnchor.originFromAnchorTransform * anchorFromJointTransform,
-                        relativeTo: nil
-                    )
-                }
-
                 let elapsedTime = currentTime - startTime
 
                 if elapsedTime >= Self.recordingDuration {
                     handComponent.stop()
-                } else if let handSkeleton = handAnchor.handSkeleton {
+                } else {
                     // Record current frame
                     var frameTransforms: [HandSkeleton.JointName: simd_float4x4] = [:]
-                    for jointName in handComponent.fingers.keys {
+                    for jointName in handComponent.forwardFingers.keys {
                         frameTransforms[jointName] =
                             handAnchor.originFromAnchorTransform
                             * handSkeleton.joint(jointName).anchorFromJointTransform
@@ -123,13 +120,11 @@ struct HandTrackingSystem: System {
                     }
 
                     if let frame = frame {
-                        // Apply recorded transforms to joints
-                        for (jointName, jointEntity) in handComponent.fingers {
+                        // Show and update backward entities with recorded positions
+                        for (jointName, jointEntity) in handComponent.backwardFingers {
+                            jointEntity.isEnabled = true
                             if let transform = frame.jointTransforms[jointName] {
-                                jointEntity.setTransformMatrix(
-                                    transform,
-                                    relativeTo: nil
-                                )
+                                jointEntity.setTransformMatrix(transform, relativeTo: nil)
                             }
                         }
                     }
@@ -137,10 +132,17 @@ struct HandTrackingSystem: System {
             }
 
             // Handle idle mode (normal tracking)
-            if handComponent.mode == .idle,
-                let handSkeleton = handAnchor.handSkeleton
-            {
-                for (jointName, jointEntity) in handComponent.fingers {
+            if handComponent.mode == .idle {
+                // Hide backward entities
+                for (_, jointEntity) in handComponent.backwardFingers {
+                    jointEntity.isEnabled = false
+                }
+            }
+
+            // Update forward entities with hand-tracking data
+            if let handSkeleton = handAnchor.handSkeleton {
+                // Update forward entities to follow hand
+                for (jointName, jointEntity) in handComponent.forwardFingers {
                     let anchorFromJointTransform = handSkeleton.joint(jointName)
                         .anchorFromJointTransform
                     jointEntity.setTransformMatrix(
@@ -148,10 +150,10 @@ struct HandTrackingSystem: System {
                         relativeTo: nil
                     )
                 }
-            }
 
-            // Update the component
-            entity.components.set(handComponent)
+                // Update the component
+                entity.components.set(handComponent)
+            }
         }
     }
 
@@ -161,16 +163,31 @@ struct HandTrackingSystem: System {
     ///   - handComponent: The hand-tracking component to update.
     func addJoints(to handEntity: Entity, handComponent: inout HandTrackingComponent) {
         let radius: Float = 0.01
-        let material = SimpleMaterial(color: .white, isMetallic: false)
-        let sphereEntity = ModelEntity(
+
+        // Create forward entities (white)
+        let forwardMaterial = SimpleMaterial(color: .white, isMetallic: false)
+        let forwardSphereEntity = ModelEntity(
             mesh: .generateSphere(radius: radius),
-            materials: [material]
+            materials: [forwardMaterial]
+        )
+
+        // Create backward entities (blue)
+        let backwardMaterial = SimpleMaterial(color: .blue, isMetallic: false)
+        let backwardSphereEntity = ModelEntity(
+            mesh: .generateSphere(radius: radius),
+            materials: [backwardMaterial]
         )
 
         for bone in Hand.joints {
-            let newJoint = sphereEntity.clone(recursive: false)
-            handEntity.addChild(newJoint)
-            handComponent.fingers[bone.0] = newJoint
+            // Add forward entity
+            let forwardJoint = forwardSphereEntity.clone(recursive: false)
+            handEntity.addChild(forwardJoint)
+            handComponent.forwardFingers[bone.0] = forwardJoint
+
+            // Add backward entity
+            let backwardJoint = backwardSphereEntity.clone(recursive: false)
+            handEntity.addChild(backwardJoint)
+            handComponent.backwardFingers[bone.0] = backwardJoint
         }
 
         handEntity.components.set(handComponent)
