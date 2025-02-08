@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B5D85E3D2BFEAC440086AA66"
-               BuildableName = "RealityKit-HandTracking.app"
-               BlueprintName = "RealityKit-HandTracking"
-               ReferencedContainer = "container:RealityKit-HandTracking.xcodeproj">
+               BuildableName = "TeNET.app"
+               BlueprintName = "TeNET"
+               ReferencedContainer = "container:TeNET.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B5D85E3D2BFEAC440086AA66"
-            BuildableName = "RealityKit-HandTracking.app"
-            BlueprintName = "RealityKit-HandTracking"
-            ReferencedContainer = "container:RealityKit-HandTracking.xcodeproj">
+            BuildableName = "TeNET.app"
+            BlueprintName = "TeNET"
+            ReferencedContainer = "container:TeNET.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B5D85E3D2BFEAC440086AA66"
-            BuildableName = "RealityKit-HandTracking.app"
-            BlueprintName = "RealityKit-HandTracking"
-            ReferencedContainer = "container:RealityKit-HandTracking.xcodeproj">
+            BuildableName = "TeNET.app"
+            BlueprintName = "TeNET"
+            ReferencedContainer = "container:TeNET.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
