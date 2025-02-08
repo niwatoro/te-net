@@ -19,6 +19,9 @@ struct MainView: View {
     /// Reference to hand tracking entities
     @Binding var rightHandEntity: Entity?
 
+    /// The label showing the remaining time for recording or playback
+    @State private var timerLabel: String = ""
+
     var body: some View {
         VStack {
             Text("TeNET")
@@ -36,7 +39,7 @@ struct MainView: View {
                 )
             case .recording:
                 Text(
-                    "Recording... \(10 - Int(CACurrentMediaTime() - (rightHandEntity?.components[HandTrackingComponent.self]?.recordingStartTime ?? 0)))s"
+                    "Recording... \(timerLabel)s"
                 )
                 .foregroundColor(.red)
             case .playing:
@@ -76,10 +79,23 @@ struct MainView: View {
             ?? HandTrackingComponent(chirality: .right)
 
         rightComponent.startRecording()
-
         rightHand.components.set(rightComponent)
-
         trackingMode = .recording
+        timerLabel = "10.00"
+
+        Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
+            guard trackingMode == .recording else {
+                timer.invalidate()
+                return
+            }
+
+            let elapsedTime = CACurrentMediaTime() - rightComponent.recordingStartTime!
+            var remainingTime = 10 - elapsedTime;
+            if (remainingTime < 0) {
+                remainingTime = 0
+            }
+            timerLabel = String(format: "%.2f", remainingTime)
+        }
 
         // Automatically stop recording after 10 seconds
         DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
@@ -130,7 +146,6 @@ struct MainView: View {
             ?? HandTrackingComponent(chirality: .right)
 
         update(&rightComponent)
-
         rightHand.components.set(rightComponent)
     }
 }

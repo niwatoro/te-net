@@ -29,6 +29,5 @@ struct HandTrackingView: View {
         rightHand.components.set(HandTrackingComponent(chirality: .right))
         content.add(rightHand)
         rightHandEntity = rightHand
-        print("Set right hand entity")
     }
 }
