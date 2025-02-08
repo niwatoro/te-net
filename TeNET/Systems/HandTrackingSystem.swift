@@ -97,7 +97,8 @@ struct HandTrackingSystem: System {
                     var frameTransforms: [HandSkeleton.JointName: simd_float4x4] = [:]
                     for jointName in handComponent.fingers.keys {
                         frameTransforms[jointName] =
-                        handAnchor.originFromAnchorTransform *   handSkeleton.joint(jointName).anchorFromJointTransform
+                            handAnchor.originFromAnchorTransform
+                            * handSkeleton.joint(jointName).anchorFromJointTransform
                     }
                     let frame = HandFrame(jointTransforms: frameTransforms, timestamp: elapsedTime)
                     handComponent.recordedFrames.append(frame)
@@ -110,13 +111,15 @@ struct HandTrackingSystem: System {
                 !handComponent.recordedFrames.isEmpty
             {
                 let elapsedTime = currentTime - startTime
+                let reversedElapsedTime = Self.recordingDuration - elapsedTime
 
                 if elapsedTime >= Self.recordingDuration {
                     handComponent.stop()
                 } else {
                     // Find the closest recorded frame for the current time
                     let frame = handComponent.recordedFrames.min {
-                        abs($0.timestamp - elapsedTime) < abs($1.timestamp - elapsedTime)
+                        abs($0.timestamp - reversedElapsedTime)
+                            < abs($1.timestamp - reversedElapsedTime)
                     }
 
                     if let frame = frame {
