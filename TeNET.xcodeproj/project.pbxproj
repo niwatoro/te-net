@@ -22,7 +22,7 @@
 /* Begin PBXFileReference section */
 		396D370875D9CF7D9CF7B6F2 /* LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		68A7A28C8B8DC1F7AD917495 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		B5D85E3E2BFEAC440086AA66 /* RealityKit-HandTracking.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RealityKit-HandTracking.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5D85E3E2BFEAC440086AA66 /* TeNET.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TeNET.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5D85E4B2BFEAC450086AA66 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B5D85E4E2BFEAC450086AA66 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B5D85E502BFEAC450086AA66 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -69,7 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				68A7A28C8B8DC1F7AD917495 /* README.md */,
-				B5D85E402BFEAC440086AA66 /* RealityKit-HandTracking */,
+				B5D85E402BFEAC440086AA66 /* TeNET */,
 				B5D85E3F2BFEAC440086AA66 /* Products */,
 				B5B187DC2ED4925D51E3ECB4 /* Configuration */,
 				B3F621A03296B5362BDBCA47 /* LICENSE */,
@@ -79,12 +79,12 @@
 		B5D85E3F2BFEAC440086AA66 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B5D85E3E2BFEAC440086AA66 /* RealityKit-HandTracking.app */,
+				B5D85E3E2BFEAC440086AA66 /* TeNET.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B5D85E402BFEAC440086AA66 /* RealityKit-HandTracking */ = {
+		B5D85E402BFEAC440086AA66 /* TeNET */ = {
 			isa = PBXGroup;
 			children = (
 				F51726472C2E1CBF00A23901 /* Views */,
@@ -93,7 +93,7 @@
 				F51726462C2E1C6F00A23901 /* Systems */,
 				F587560F2C2DCE9F00D6E665 /* App */,
 			);
-			path = "RealityKit-HandTracking";
+			path = "TeNET";
 			sourceTree = "<group>";
 		};
 		F3C32CD42CC799AF00719014 /* Components */ = {
@@ -145,9 +145,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B5D85E3D2BFEAC440086AA66 /* RealityKit-HandTracking */ = {
+		B5D85E3D2BFEAC440086AA66 /* TeNET */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B5D85E532BFEAC450086AA66 /* Build configuration list for PBXNativeTarget "RealityKit-HandTracking" */;
+			buildConfigurationList = B5D85E532BFEAC450086AA66 /* Build configuration list for PBXNativeTarget "TeNET" */;
 			buildPhases = (
 				B5D85E3A2BFEAC440086AA66 /* Sources */,
 				B5D85E3B2BFEAC440086AA66 /* Frameworks */,
@@ -157,9 +157,9 @@
 			);
 			dependencies = (
 			);
-			name = "RealityKit-HandTracking";
-			productName = "RealityKit-HandTracking";
-			productReference = B5D85E3E2BFEAC440086AA66 /* RealityKit-HandTracking.app */;
+			name = "TeNET";
+			productName = "TeNET";
+			productReference = B5D85E3E2BFEAC440086AA66 /* TeNET.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -179,7 +179,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B5D85E392BFEAC440086AA66 /* Build configuration list for PBXProject "RealityKit-HandTracking" */;
+			buildConfigurationList = B5D85E392BFEAC440086AA66 /* Build configuration list for PBXProject "TeNET" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -192,7 +192,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B5D85E3D2BFEAC440086AA66 /* RealityKit-HandTracking */,
+				B5D85E3D2BFEAC440086AA66 /* TeNET */,
 			);
 		};
 /* End PBXProject section */
@@ -281,12 +281,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Te NET";
+				INFOPLIST_KEY_CFBundleDisplayName = "TeNET";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "Te NET";
+				PRODUCT_NAME = "TeNET";
 				SDKROOT = xros;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -341,11 +341,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Te NET";
+				INFOPLIST_KEY_CFBundleDisplayName = "TeNET";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "Te NET";
+				PRODUCT_NAME = "TeNET";
 				SDKROOT = xros;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
@@ -361,7 +361,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "RealityKit-HandTracking/App";
+				DEVELOPMENT_ASSET_PATHS = "TeNET/App";
 				DEVELOPMENT_TEAM = L295U7GVV6;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -392,7 +392,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "RealityKit-HandTracking/App";
+				DEVELOPMENT_ASSET_PATHS = "TeNET/App";
 				DEVELOPMENT_TEAM = L295U7GVV6;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -417,7 +417,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B5D85E392BFEAC440086AA66 /* Build configuration list for PBXProject "RealityKit-HandTracking" */ = {
+		B5D85E392BFEAC440086AA66 /* Build configuration list for PBXProject "TeNET" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B5D85E512BFEAC450086AA66 /* Debug */,
@@ -426,7 +426,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B5D85E532BFEAC450086AA66 /* Build configuration list for PBXNativeTarget "RealityKit-HandTracking" */ = {
+		B5D85E532BFEAC450086AA66 /* Build configuration list for PBXNativeTarget "TeNET" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B5D85E542BFEAC450086AA66 /* Debug */,
