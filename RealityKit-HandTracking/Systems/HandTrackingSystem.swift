@@ -76,8 +76,18 @@ struct HandTrackingSystem: System {
 
             // Handle recording mode
             if handComponent.mode == .recording,
+                let handSkeleton = handAnchor.handSkeleton,
                 let startTime = handComponent.recordingStartTime
             {
+                for (jointName, jointEntity) in handComponent.fingers {
+                    let anchorFromJointTransform = handSkeleton.joint(jointName)
+                        .anchorFromJointTransform
+                    jointEntity.setTransformMatrix(
+                        handAnchor.originFromAnchorTransform * anchorFromJointTransform,
+                        relativeTo: nil
+                    )
+                }
+
                 let elapsedTime = currentTime - startTime
 
                 if elapsedTime >= Self.recordingDuration {
