@@ -52,7 +52,7 @@ struct MainView: View {
                     == false)
             {
                 Button(action: startPlayback) {
-                    Text("Play Recording")
+                    Text("Play Recording Backward")
                 }
                 .background(
                     .green,
