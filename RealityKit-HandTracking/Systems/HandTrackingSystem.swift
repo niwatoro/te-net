@@ -87,7 +87,7 @@ struct HandTrackingSystem: System {
                     var frameTransforms: [HandSkeleton.JointName: simd_float4x4] = [:]
                     for jointName in handComponent.fingers.keys {
                         frameTransforms[jointName] =
-                            handSkeleton.joint(jointName).anchorFromJointTransform
+                        handAnchor.originFromAnchorTransform *   handSkeleton.joint(jointName).anchorFromJointTransform
                     }
                     let frame = HandFrame(jointTransforms: frameTransforms, timestamp: elapsedTime)
                     handComponent.recordedFrames.append(frame)
@@ -114,7 +114,7 @@ struct HandTrackingSystem: System {
                         for (jointName, jointEntity) in handComponent.fingers {
                             if let transform = frame.jointTransforms[jointName] {
                                 jointEntity.setTransformMatrix(
-                                    handAnchor.originFromAnchorTransform * transform,
+                                    transform,
                                     relativeTo: nil
                                 )
                             }

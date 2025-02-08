@@ -21,7 +21,7 @@ struct MainView: View {
 
     var body: some View {
         VStack {
-            Text("Hand Tracking Example")
+            Text("Te NET")
                 .font(.title)
                 .padding()
 
