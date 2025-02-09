@@ -4,6 +4,7 @@ See the LICENSE.txt file for this sample's licensing information.
 Abstract:
 A component that tracks an entity to a hand.
 */
+import ARKit
 import ARKit.hand_skeleton
 import QuartzCore
 import RealityKit
@@ -27,22 +28,38 @@ struct HandTrackingComponent: Component {
 
     /// The current mode of the hand tracking
     enum TrackingMode {
-        case recording
-        case playing
         case idle
+        case playing
+        case pause
+        case gameOver
     }
 
     /// Current tracking mode
     var mode: TrackingMode = .idle
 
-    /// Recorded frames of hand movement
+    /// Recorded frames of hand movement for the current round
     var recordedFrames: [HandFrame] = []
+
+    /// Playing frames of hand movement from previous rounds
+    var playingFrames: [HandFrame] = []
+
+    /// Stored frames from previous rounds
+    private var storedFrames: [[HandFrame]] = []
 
     /// Recording start time
     var recordingStartTime: TimeInterval?
 
     /// Playback start time
     var playbackStartTime: TimeInterval?
+
+    /// Current round number
+    var currentRound: Int = 1
+
+    /// Whether the hand is currently colliding with a past hand
+    var isColliding: Bool = false
+
+    /// Collision threshold distance in meters
+    static let collisionThreshold: Float = 0.03
 
     /// Creates a new hand-tracking component.
     /// - Parameter chirality: The chirality of the hand target.
@@ -52,22 +69,43 @@ struct HandTrackingComponent: Component {
     }
 
     /// Start recording mode
-    mutating func startRecording() {
-        mode = .recording
-        recordedFrames = []
+    mutating func startRound() {
+        mode = .playing
         recordingStartTime = CACurrentMediaTime()
+        playbackStartTime = CACurrentMediaTime()
+
+        // Set up playback frames from stored frames
+        playingFrames = []
+        for previousRoundFrames in storedFrames {
+            playingFrames.append(contentsOf: previousRoundFrames)
+        }
     }
 
     /// Start playback mode
-    mutating func startPlayback() {
-        mode = .playing
-        playbackStartTime = CACurrentMediaTime()
+    mutating func startPause() {
+        mode = .pause
+        // Store the current round's frames
+        if !recordedFrames.isEmpty {
+            storedFrames.append(recordedFrames)
+            currentRound += 1
+        }
+        recordedFrames = []
     }
 
     /// Stop current mode
     mutating func stop() {
         mode = .idle
+        // Only clear the current round's recorded frames
+        recordedFrames = []
+        // Keep stored frames for next round
         recordingStartTime = nil
         playbackStartTime = nil
+
+        if mode == .gameOver {
+            // Reset everything only if game is over
+            storedFrames = []
+            playingFrames = []
+            currentRound = 1
+        }
     }
 }

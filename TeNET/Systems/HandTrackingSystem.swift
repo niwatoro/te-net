@@ -4,7 +4,7 @@ See the LICENSE.txt file for this sample's licensing information.
 Abstract:
 A system that updates entities that have hand-tracking components.
 */
-import ARKit
+import ARKit.hand_skeleton
 import QuartzCore
 import RealityKit
 
@@ -80,8 +80,16 @@ struct HandTrackingSystem: System {
                     }
             else { continue }
 
-            // Handle recording mode
-            if handComponent.mode == .recording,
+            // Handle idle mode (normal tracking)
+            if handComponent.mode == .idle {
+                // Hide backward entities
+                for (_, jointEntity) in handComponent.backwardFingers {
+                    jointEntity.isEnabled = false
+                }
+            }
+
+            // Handle recording
+            if handComponent.mode == .playing,
                 let handSkeleton = handAnchor.handSkeleton,
                 let startTime = handComponent.recordingStartTime
             {
@@ -102,10 +110,10 @@ struct HandTrackingSystem: System {
                 }
             }
 
-            // Handle playback mode
+            // Handle playback
             if handComponent.mode == .playing,
                 let startTime = handComponent.playbackStartTime,
-                !handComponent.recordedFrames.isEmpty
+                !handComponent.playingFrames.isEmpty
             {
                 let elapsedTime = currentTime - startTime
                 let reversedElapsedTime = Self.recordingDuration - elapsedTime
@@ -114,7 +122,7 @@ struct HandTrackingSystem: System {
                     handComponent.stop()
                 } else {
                     // Find the closest recorded frame for the current time
-                    let frame = handComponent.recordedFrames.min {
+                    let frame = handComponent.playingFrames.min {
                         abs($0.timestamp - reversedElapsedTime)
                             < abs($1.timestamp - reversedElapsedTime)
                     }
@@ -131,11 +139,29 @@ struct HandTrackingSystem: System {
                 }
             }
 
-            // Handle idle mode (normal tracking)
-            if handComponent.mode == .idle {
-                // Hide backward entities
-                for (_, jointEntity) in handComponent.backwardFingers {
-                    jointEntity.isEnabled = false
+            // Check for collisions during playback
+            if handComponent.mode == .playing {
+                var isColliding = false
+                // Compare each forward finger with each backward finger
+                for (_, forwardJoint) in handComponent.forwardFingers {
+                    for (_, backwardJoint) in handComponent.backwardFingers
+                    where backwardJoint.isEnabled {
+                        let distance = simd_distance(
+                            forwardJoint.position,
+                            backwardJoint.position
+                        )
+                        if distance < HandTrackingComponent.collisionThreshold {
+                            isColliding = true
+                            break
+                        }
+                    }
+                    if isColliding { break }
+                }
+
+                // Update collision state
+                if isColliding && !handComponent.isColliding {
+                    handComponent.isColliding = true
+                    handComponent.mode = .gameOver
                 }
             }
 

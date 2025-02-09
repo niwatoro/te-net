@@ -23,46 +23,62 @@ struct MainView: View {
     /// The label showing the remaining time for recording or playback
     @State private var timerLabel: String = ""
 
+    /// Current round number
+    @State private var currentRound: Int = 1
+
+    /// Best round achieved
+    @State private var bestRound: Int = 0
+
     var body: some View {
         VStack {
             Text("TeNET")
                 .font(.title)
                 .padding()
 
+            if bestRound > 0 {
+                Text("Best: Round \(bestRound)")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .padding(.bottom)
+            }
+
             switch trackingMode {
             case .idle:
-                Button(action: startRecording) {
-                    Text("Start Recording")
+                Button(action: startRound) {
+                    Text("Start Game")
                 }
                 .background(
                     .blue,
                     in: Capsule()
                 )
-            case .recording:
-                Text(
-                    "Recording... \(timerLabel)s"
-                )
-                .foregroundColor(.red)
             case .playing:
-                Text("Playing...")
+                Text("Round \(currentRound): \(timerLabel)s")
                     .foregroundColor(.green)
-            }
+                    .padding()
+            case .pause:
+                Text("Round starts in \(timerLabel)s")
+                    .foregroundColor(.green)
+                    .padding()
+            case .gameOver:
+                VStack {
+                    Text("Game Over!")
+                        .foregroundColor(.red)
+                        .padding()
 
-            if trackingMode == .idle
-                && ((rightHandEntity?.components[HandTrackingComponent.self]?.recordedFrames
-                    .isEmpty == false)
-                    || (leftHandEntity?.components[HandTrackingComponent.self]?
-                        .recordedFrames.isEmpty == false))
-            {
-                Button(action: startPlayback) {
-                    Text("Play Recording Backward")
+                    Text("You reached Round \(currentRound)")
+                        .padding(.bottom)
+
+                    Button(action: restartGame) {
+                        Text("Try Again")
+                    }
+                    .background(
+                        .blue,
+                        in: Capsule()
+                    )
                 }
-                .background(
-                    .green,
-                    in: Capsule()
-                )
             }
         }
+
         .onAppear {
             Task {
                 await openImmersiveSpace(id: "HandTrackingScene")
@@ -70,17 +86,20 @@ struct MainView: View {
         }
     }
 
-    private func startRecording() {
+    private func startRound() {
         // Start recording for all hands
         updateHandComponents { component in
-            component.startRecording()
+            component.startRound()
+            component.currentRound = currentRound
         }
 
-        trackingMode = .recording
+        trackingMode = .playing
         timerLabel = "10.00"
 
-        Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
-            guard trackingMode == .recording,
+        // Create a strong reference to the timer
+        let timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) {
+            timer in
+            guard
                 let component = rightHandEntity?.components[HandTrackingComponent.self],
                 let startTime = component.recordingStartTime
             else {
@@ -92,43 +111,63 @@ struct MainView: View {
             var remainingTime = 10 - elapsedTime
             if remainingTime < 0 {
                 remainingTime = 0
+                // Ensure we transition to pause when time is up
+                if trackingMode == .playing {
+                    timer.invalidate()
+                    currentRound += 1
+                    startPause()
+                }
             }
+            timerLabel = String(format: "%.2f", remainingTime)
+
+            // Check for game over
+            if component.mode == .gameOver {
+                timer.invalidate()
+                trackingMode = .gameOver
+                if currentRound > bestRound {
+                    bestRound = currentRound
+                }
+            }
+        }
+
+        // Keep the timer alive
+        RunLoop.current.add(timer, forMode: .common)
+    }
+
+    private func startPause() {
+        updateHandComponents { component in
+            component.startPause()
+        }
+
+        trackingMode = .pause
+        timerLabel = "3.00"
+        var remainingTime: Double = 3.0
+
+        // Create a strong reference to the timer
+        let timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
+            remainingTime -= 0.01
+            if remainingTime < 0 {
+                remainingTime = 0
+                // Ensure we transition to next round when pause timer is up
+                if trackingMode == .pause {
+                    timer.invalidate()
+                    startRound()
+                }
+            }
+
             timerLabel = String(format: "%.2f", remainingTime)
         }
 
-        // Automatically stop recording after 10 seconds
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-            if trackingMode == .recording {
-                stopRecording()
-            }
-        }
+        // Keep the timer alive
+        RunLoop.current.add(timer, forMode: .common)
     }
 
-    private func stopRecording() {
+    private func restartGame() {
         updateHandComponents { component in
             component.stop()
         }
-        trackingMode = .idle
-    }
 
-    private func startPlayback() {
-        updateHandComponents { component in
-            component.startPlayback()
-        }
-        trackingMode = .playing
-
-        // Automatically stop playback after 10 seconds
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-            if trackingMode == .playing {
-                stopPlayback()
-            }
-        }
-    }
-
-    private func stopPlayback() {
-        updateHandComponents { component in
-            component.stop()
-        }
+        currentRound = 1
         trackingMode = .idle
     }
 
