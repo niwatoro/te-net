@@ -94,7 +94,6 @@ struct HandTrackingComponent: Component {
 
     /// Stop current mode
     mutating func stop() {
-        mode = .idle
         // Only clear the current round's recorded frames
         recordedFrames = []
         // Keep stored frames for next round
@@ -102,10 +101,13 @@ struct HandTrackingComponent: Component {
         playbackStartTime = nil
 
         if mode == .gameOver {
-            // Reset everything only if game is over
+            // Reset everything if game is over
             storedFrames = []
             playingFrames = []
             currentRound = 1
+            mode = .idle
+        } else {
+            mode = .idle
         }
     }
 }
