@@ -74,10 +74,10 @@ struct HandTrackingComponent: Component {
         recordingStartTime = CACurrentMediaTime()
         playbackStartTime = CACurrentMediaTime()
 
-        // Set up playback frames from stored frames
+        // Set up playback frames from only the previous round
         playingFrames = []
-        for previousRoundFrames in storedFrames {
-            playingFrames.append(contentsOf: previousRoundFrames)
+        if let previousRoundFrames = storedFrames.last {
+            playingFrames = previousRoundFrames
         }
     }
 
