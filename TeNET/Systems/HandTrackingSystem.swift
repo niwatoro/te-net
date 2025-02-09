@@ -162,17 +162,25 @@ struct HandTrackingSystem: System {
     ///   - entity: The entity to perform setup on.
     ///   - handComponent: The hand-tracking component to update.
     func addJoints(to handEntity: Entity, handComponent: inout HandTrackingComponent) {
-        let radius: Float = 0.01
+        let radius: Float = 0.012
 
-        // Create forward entities (white)
-        let forwardMaterial = SimpleMaterial(color: .white, isMetallic: false)
+        // Create forward entities
+        let forwardMaterial = SimpleMaterial(
+            color: .white,
+            roughness: 0.1,
+            isMetallic: false
+        )
         let forwardSphereEntity = ModelEntity(
             mesh: .generateSphere(radius: radius),
             materials: [forwardMaterial]
         )
 
-        // Create backward entities (blue)
-        let backwardMaterial = SimpleMaterial(color: .blue, isMetallic: false)
+        // Create backward entities
+        let backwardMaterial = SimpleMaterial(
+            color: .red,
+            roughness: 0.1,
+            isMetallic: false
+        )
         let backwardSphereEntity = ModelEntity(
             mesh: .generateSphere(radius: radius),
             materials: [backwardMaterial]
