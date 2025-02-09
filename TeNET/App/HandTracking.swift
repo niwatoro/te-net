@@ -12,14 +12,21 @@ import SwiftUI
 @main
 struct HandTracking: App {
     @State private var rightHandEntity: Entity?
+    @State private var leftHandEntity: Entity?
 
     var body: some SwiftUI.Scene {
         WindowGroup {
-            MainView(rightHandEntity: $rightHandEntity)
+            MainView(
+                rightHandEntity: $rightHandEntity,
+                leftHandEntity: $leftHandEntity
+            )
         }
 
         ImmersiveSpace(id: "HandTrackingScene") {
-            HandTrackingView(rightHandEntity: $rightHandEntity)
+            HandTrackingView(
+                rightHandEntity: $rightHandEntity,
+                leftHandEntity: $leftHandEntity
+            )
         }
     }
 }

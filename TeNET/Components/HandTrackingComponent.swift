@@ -19,8 +19,11 @@ struct HandTrackingComponent: Component {
     /// The chirality for the hand this component tracks.
     let chirality: AnchoringComponent.Target.Chirality
 
-    /// A lookup that maps each joint name to the entity that represents it.
-    var fingers: [HandSkeleton.JointName: Entity] = [:]
+    /// A lookup that maps each joint name to its forward (tracking) entity.
+    var forwardFingers: [HandSkeleton.JointName: Entity] = [:]
+
+    /// A lookup that maps each joint name to its backward (playback) entity.
+    var backwardFingers: [HandSkeleton.JointName: Entity] = [:]
 
     /// The current mode of the hand tracking
     enum TrackingMode {
