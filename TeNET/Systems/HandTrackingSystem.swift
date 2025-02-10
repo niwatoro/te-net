@@ -119,6 +119,11 @@ struct HandTrackingSystem: System {
                 let reversedElapsedTime = Self.recordingDuration - elapsedTime
 
                 if elapsedTime >= Self.recordingDuration {
+                    // Check if all markers were collected before time ran out
+                    if handComponent.collectedMarkers < handComponent.currentRound {
+                        // Not all markers were collected - game over
+                        handComponent.mode = .gameOver
+                    }
                     handComponent.stop()
                 } else {
                     // Find the closest recorded frame for the current time
@@ -162,6 +167,30 @@ struct HandTrackingSystem: System {
                 if isColliding && !handComponent.isColliding {
                     handComponent.isColliding = true
                     handComponent.mode = .gameOver
+                }
+
+                // Check for marker collisions and manage markers
+                if let handSkeleton = handAnchor.handSkeleton {
+                    var jointPositions: [HandSkeleton.JointName: simd_float4x4] = [:]
+                    for (jointName, _) in handComponent.forwardFingers {
+                        jointPositions[jointName] =
+                            handAnchor.originFromAnchorTransform
+                            * handSkeleton.joint(jointName).anchorFromJointTransform
+                    }
+                    handComponent.checkMarkerCollisions(jointPositions: jointPositions)
+
+                    // Add markers to scene if not already added
+                    for marker in handComponent.markers {
+                        if marker.parent == nil {
+                            handEntity.parent?.addChild(marker)
+                        }
+                    }
+
+                    // Check if all markers are collected
+                    if handComponent.collectedMarkers == handComponent.currentRound {
+                        // All markers collected, allow proceeding to next round
+                        handComponent.stop()
+                    }
                 }
             }
 

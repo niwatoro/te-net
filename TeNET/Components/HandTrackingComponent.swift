@@ -58,8 +58,17 @@ struct HandTrackingComponent: Component {
     /// Whether the hand is currently colliding with a past hand
     var isColliding: Bool = false
 
+    /// Array of markers for the current round
+    var markers: [Marker] = []
+
+    /// Number of collected markers in the current round
+    var collectedMarkers: Int = 0
+
     /// Collision threshold distance in meters
     static let collisionThreshold: Float = 0.03
+
+    /// Marker collision threshold distance in meters
+    static let markerCollisionThreshold: Float = 0.1
 
     /// Creates a new hand-tracking component.
     /// - Parameter chirality: The chirality of the hand target.
@@ -79,6 +88,51 @@ struct HandTrackingComponent: Component {
         if let previousRoundFrames = storedFrames.last {
             playingFrames = previousRoundFrames
         }
+
+        // Reset marker collection state
+        collectedMarkers = 0
+
+        // Create markers for the current round
+        markers = []
+        for _ in 0..<currentRound {
+            // Generate random position within reasonable play area
+            let position = SIMD3<Float>(
+                Float.random(in: -0.5...0.5),  // X: left/right
+                Float.random(in: 1.0...1.5),  // Y: height
+                Float.random(in: -0.3...0.3)  // Z: front/back
+            )
+            let marker = Marker(position: position)
+            markers.append(marker)
+        }
+    }
+
+    /// Check for collisions between hand joints and markers
+    mutating func checkMarkerCollisions(jointPositions: [HandSkeleton.JointName: simd_float4x4]) {
+        guard mode == .playing else { return }
+
+        for marker in markers where !marker.isCollected {
+            for position in jointPositions.values {
+                let markerPosition = marker.position
+                let jointPosition = SIMD3<Float>(
+                    position.columns.3.x, position.columns.3.y, position.columns.3.z)
+                let distance = length(markerPosition - jointPosition)
+
+                if distance < Self.markerCollisionThreshold {
+                    marker.isCollected = true
+                    collectedMarkers += 1
+
+                    // Update marker appearance to show it's collected
+                    if let modelComponent = marker.components[ModelComponent.self] {
+                        var material = SimpleMaterial(color: .green, isMetallic: false)
+                        material.baseColor = .init(tint: .green.withAlphaComponent(0.3))
+                        modelComponent.materials = [material]
+                        marker.components[ModelComponent.self] = modelComponent
+                    }
+
+                    break
+                }
+            }
+        }
     }
 
     /// Start playback mode
@@ -90,6 +144,12 @@ struct HandTrackingComponent: Component {
             currentRound += 1
         }
         recordedFrames = []
+
+        // Clean up markers from the previous round
+        for marker in markers {
+            marker.removeFromParent()
+        }
+        markers = []
     }
 
     /// Stop current mode
@@ -105,6 +165,11 @@ struct HandTrackingComponent: Component {
             storedFrames = []
             playingFrames = []
             currentRound = 1
+            // Clean up markers
+            for marker in markers {
+                marker.removeFromParent()
+            }
+            markers = []
             mode = .idle
         } else {
             mode = .idle

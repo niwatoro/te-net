@@ -97,7 +97,7 @@ struct MainView: View {
         timerLabel = "10.00"
 
         // Create a strong reference to the timer
-        let timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) {
+        let timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) {
             timer in
             guard
                 let component = rightHandEntity?.components[HandTrackingComponent.self],
@@ -144,8 +144,8 @@ struct MainView: View {
         var remainingTime: Double = 3.0
 
         // Create a strong reference to the timer
-        let timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
-            remainingTime -= 0.01
+        let timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
+            remainingTime -= 0.1
             if remainingTime < 0 {
                 remainingTime = 0
                 // Ensure we transition to next round when pause timer is up
