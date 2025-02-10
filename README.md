@@ -14,9 +14,9 @@ TeNET is an immersive game that transforms your hand movements into an interacti
 ## Game Requirements
 
 - macOS/iOS device with ARKit support
-- Xcode 15.0 or later
-- Swift 5.9 or later
-- iOS 17.0 / macOS 14.0 or later
+- Xcode 16.2 or later
+- Swift 6.0.3 or later
+- macOS 15.3 or later
 
 ## Game Architecture
 
