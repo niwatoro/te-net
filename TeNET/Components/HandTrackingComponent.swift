@@ -122,9 +122,9 @@ struct HandTrackingComponent: Component {
                     collectedMarkers += 1
 
                     // Update marker appearance to show it's collected
-                    if let modelComponent = marker.components[ModelComponent.self] {
+                    if var modelComponent = marker.components[ModelComponent.self] {
                         var material = SimpleMaterial(color: .green, isMetallic: false)
-                        material.baseColor = .init(tint: .green.withAlphaComponent(0.3))
+                        material.color = .init(tint: .green.withAlphaComponent(0.3))
                         modelComponent.materials = [material]
                         marker.components[ModelComponent.self] = modelComponent
                     }

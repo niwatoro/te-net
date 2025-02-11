@@ -47,8 +47,6 @@ struct HandTrackingSystem: System {
                 self.latestRightHand = anchorUpdate.anchor
             case .left:
                 self.latestLeftHand = anchorUpdate.anchor
-            default:
-                break
             }
         }
     }
@@ -182,7 +180,7 @@ struct HandTrackingSystem: System {
                     // Add markers to scene if not already added
                     for marker in handComponent.markers {
                         if marker.parent == nil {
-                            handEntity.parent?.addChild(marker)
+                            entity.parent?.addChild(marker)
                         }
                     }
 
