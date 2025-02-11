@@ -145,6 +145,18 @@ struct MainView: View {
 
         // Create a strong reference to the timer
         let timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
+            // Check for game over first
+            if let component = rightHandEntity?.components[HandTrackingComponent.self],
+                component.mode == .gameOver
+            {
+                timer.invalidate()
+                trackingMode = .gameOver
+                if currentRound > bestRound {
+                    bestRound = currentRound
+                }
+                return
+            }
+
             remainingTime -= 0.1
             if remainingTime < 0 {
                 remainingTime = 0

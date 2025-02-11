@@ -186,8 +186,8 @@ struct HandTrackingSystem: System {
 
                     // Check if all markers are collected
                     if handComponent.collectedMarkers == handComponent.currentRound {
-                        // All markers collected, allow proceeding to next round
-                        handComponent.stop()
+                        // All markers collected, transition to pause state for next round
+                        handComponent.startPause()
                     }
                 }
             }
