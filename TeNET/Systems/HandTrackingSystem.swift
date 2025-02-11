@@ -47,8 +47,6 @@ struct HandTrackingSystem: System {
                 self.latestRightHand = anchorUpdate.anchor
             case .left:
                 self.latestLeftHand = anchorUpdate.anchor
-            default:
-                break
             }
         }
     }
@@ -162,6 +160,30 @@ struct HandTrackingSystem: System {
                 if isColliding && !handComponent.isColliding {
                     handComponent.isColliding = true
                     handComponent.mode = .gameOver
+                }
+
+                // Check for marker collisions and manage markers
+                if let handSkeleton = handAnchor.handSkeleton {
+                    var jointPositions: [HandSkeleton.JointName: simd_float4x4] = [:]
+                    for (jointName, _) in handComponent.forwardFingers {
+                        jointPositions[jointName] =
+                            handAnchor.originFromAnchorTransform
+                            * handSkeleton.joint(jointName).anchorFromJointTransform
+                    }
+                    handComponent.checkMarkerCollisions(jointPositions: jointPositions)
+
+                    // Add markers to scene if not already added
+                    for marker in handComponent.markers {
+                        if marker.parent == nil {
+                            entity.parent?.addChild(marker)
+                        }
+                    }
+
+                    // Check if all markers are collected
+                    if handComponent.collectedMarkers == handComponent.currentRound {
+                        // All markers collected, transition to pause state for next round
+                        handComponent.startPause()
+                    }
                 }
             }
 
