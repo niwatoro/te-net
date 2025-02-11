@@ -117,11 +117,6 @@ struct HandTrackingSystem: System {
                 let reversedElapsedTime = Self.recordingDuration - elapsedTime
 
                 if elapsedTime >= Self.recordingDuration {
-                    // Check if all markers were collected before time ran out
-                    if handComponent.collectedMarkers < handComponent.currentRound {
-                        // Not all markers were collected - game over
-                        handComponent.mode = .gameOver
-                    }
                     handComponent.stop()
                 } else {
                     // Find the closest recorded frame for the current time
